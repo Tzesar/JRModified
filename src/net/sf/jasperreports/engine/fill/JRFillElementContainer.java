@@ -375,6 +375,7 @@ public abstract class JRFillElementContainer extends JRFillElementGroup implemen
 
                     firstYElement = element;
 
+                    // Band Stretch is how much the container must increase its height to be able to include the element
                     bandStretch = element.getRelativeY() + element.getStretchHeight() - element.getY() - element.getHeight();
                     if (bandStretch > maxBandStretch)
                     {
@@ -384,12 +385,17 @@ public abstract class JRFillElementContainer extends JRFillElementGroup implemen
             }
         }
 
+        // If the maxBandStretch is bigger than the difference between the available height in the container
+        // and the ocuppied height of the container, the container is set as overflowed.
         if (maxBandStretch > availableHeight - getContainerHeight() + firstY)
         {
             currentOverflow = true;
         }
 
         // stretchHeight includes firstY, which is subtracted in fillElements
+        // If the container is overflowed the stretch height is set to the available height plus the firstY
+        // If is not overflowed the stretch height is the addition between the current container height and
+        // the maxBandStretch
         if (currentOverflow)
         {
             stretchHeight = availableHeight + firstY;
@@ -420,6 +426,7 @@ public abstract class JRFillElementContainer extends JRFillElementGroup implemen
                     Element elementDOM = Jsoup.parse(elementContent).body();
                     Elements parents = elementDOM.children();
                     Integer height = 0;
+                    Integer containerStretchHeight = 0;
                     for( Element parent : parents){
                         Elements imageList = new Elements();
                         if ( parent.getElementsByTag("img").size() > 0 && !"img".equals(parent.tagName()) ){
@@ -436,19 +443,19 @@ public abstract class JRFillElementContainer extends JRFillElementGroup implemen
                             }
 //                            String styleAttr = parent.attr("style");
 //                            URL url = null;
-//
+
 //                            try{
 //                                url = new URL(parent.attr("src"));
 //                            } catch (MalformedURLException ex){
 //                                System.out.println(ex);
 //                            }
-//
+
 //                            expression = new JRDesignExpression();
 //                            expression.setText(parent.attr("src"));
 //                            JRImageRenderer imageRenderer = JRImageRenderer.getInstance(
 //                                    JRLoader.loadBytes(url)
 //                            );
-//
+
 //                            String imageHeight = Integer.toString((int)imageRenderer.getDimension().getHeight());
 //                            String imageWidth = Integer.toString((int)imageRenderer.getDimension().getWidth());
 //                            if ( styleAttr.contains("height") ){
@@ -457,29 +464,29 @@ public abstract class JRFillElementContainer extends JRFillElementGroup implemen
 //                            if ( styleAttr.contains("width") ){
 //                                imageWidth = styleAttr.substring(styleAttr.indexOf("width:"), styleAttr.indexOf("px;", styleAttr.indexOf("width:")));
 //                            }
-//
+
 //                            Integer iWidth = Integer.parseInt(imageWidth);
 //                            Integer iHeight = Integer.parseInt(imageHeight);
-//
+
 //                            Object object = new Object();
 //                            JRDesignImage imageElement = (JRDesignImage) object;
-//
+
 //                            imageElement.setWidth(iWidth);
 //                            imageElement.setHeight(iHeight);
 //                            imageElement.setScaleImage(ScaleImageEnum.CLIP);
 //                            imageElement.setExpression(expression);
-//
+
 //                            elementList.add(imageElement);
                         } else {
                             System.out.println("Creating Styled Text");
                             JRFillTextFieldCustomized textElement = new JRFillTextFieldCustomized(textField, new JRFillCloneFactory());
                             textElement.setRawText(parent.html());
                             textElement.getStyledText();
-                            textElement.setX(textElement.getX()+height);
-//                            textElement.setY(textElement.getY()+3);
+//                            textElement.setX(textElement.getX());
                             elementList.add(textElement);
-//                            height += textElement.getHeight() + 2;
-                            height += textElement.getWidth() + 2;
+                            textElement.setY(textElement.getY()+height);
+                            height += textElement.getHeight() + 5;
+                            containerStretchHeight += height;
                         }
                         for ( Element image : imageList ){
                             try{
@@ -488,43 +495,53 @@ public abstract class JRFillElementContainer extends JRFillElementGroup implemen
                             } catch (ClassCastException ex){
                                 System.out.println("Image Error:" + ex.getMessage() );
                             }
-//                        String styleAttr = image.attr("style");
-//                        URL url = null;
-//
-//                        try{
-//                            url = new URL(image.attr("src"));
-//                        } catch (MalformedURLException ex){
-//                            System.out.println(ex);
-//                        }
-//
-//                        expression = new JRDesignExpression();
-//                        expression.setText(image.attr("src"));
-//                        JRImageRenderer imageRenderer = JRImageRenderer.getInstance(
-//                                JRLoader.loadBytes(url)
-//                        );
-//
-//                        String imageHeight = Integer.toString((int)imageRenderer.getDimension().getHeight());
-//                        String imageWidth = Integer.toString((int)imageRenderer.getDimension().getWidth());
-//                        if ( styleAttr.contains("height") ){
-//                            imageHeight = styleAttr.substring(styleAttr.indexOf("height:"), styleAttr.indexOf("px;", styleAttr.indexOf("height:")));
-//                        }
-//                        if ( styleAttr.contains("width") ){
-//                            imageWidth = styleAttr.substring(styleAttr.indexOf("width:"), styleAttr.indexOf("px;", styleAttr.indexOf("width:")));
-//                        }
-//
-//                        Integer iWidth = Integer.parseInt(imageWidth);
-//                        Integer iHeight = Integer.parseInt(imageHeight);
-//
-//                        Object object = new Object();
-//                        JRDesignImage imageElement = (JRDesignImage) object;
-//
-//                        imageElement.setWidth(iWidth);
-//                        imageElement.setHeight(iHeight);
-//                        imageElement.setScaleImage(ScaleImageEnum.CLIP);
-//                        imageElement.setExpression(expression);
-//
-//                        elementList.add(imageElement);
+//                            String styleAttr = image.attr("style");
+//                            URL url = null;
+
+//                            try{
+//                                url = new URL(image.attr("src"));
+//                            } catch (MalformedURLException ex){
+//                                System.out.println(ex);
+//                            }
+
+//                            expression = new JRDesignExpression();
+//                            expression.setText(image.attr("src"));
+//                            JRImageRenderer imageRenderer = JRImageRenderer.getInstance(
+//                                    JRLoader.loadBytes(url)
+//                            );
+
+//                            String imageHeight = Integer.toString((int)imageRenderer.getDimension().getHeight());
+//                            String imageWidth = Integer.toString((int)imageRenderer.getDimension().getWidth());
+//                            if ( styleAttr.contains("height") ){
+//                                imageHeight = styleAttr.substring(styleAttr.indexOf("height:"), styleAttr.indexOf("px;", styleAttr.indexOf("height:")));
+//                            }
+//                            if ( styleAttr.contains("width") ){
+//                                imageWidth = styleAttr.substring(styleAttr.indexOf("width:"), styleAttr.indexOf("px;", styleAttr.indexOf("width:")));
+//                            }
+
+//                            Integer iWidth = Integer.parseInt(imageWidth);
+//                            Integer iHeight = Integer.parseInt(imageHeight);
+
+//                            Object object = new Object();
+//                            JRDesignImage imageElement = (JRDesignImage) object;
+
+//                            imageElement.setWidth(iWidth);
+//                            imageElement.setHeight(iHeight);
+//                            imageElement.setScaleImage(ScaleImageEnum.CLIP);
+//                            imageElement.setExpression(expression);
+
+//                            elementList.add(imageElement);
                         }
+                    }
+                    // Increase the height of the container
+
+                    try {
+                        JRElement parentElement = ((JRFillTextField)element).parent;
+                        if ( parentElement instanceof JRFillBand){
+                            ((JRFillBand)parentElement).setStretchHeight(containerStretchHeight);
+                        }
+                    } catch (ClassCastException ex){
+
                     }
 
                     elementList.addAll(Arrays.asList(this.elements));
@@ -803,7 +820,7 @@ public abstract class JRFillElementContainer extends JRFillElementGroup implemen
 
                 if (element.getRelativeY() + element.getStretchHeight() > stretchHeight - firstY)
                 {
-                    element.setToPrint(false);
+//                    element.setToPrint(false);
                 }
 
                 element.setAlreadyPrinted(element.isToPrint() || element.isAlreadyPrinted());

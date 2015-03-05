@@ -1,2 +1,8 @@
+
+.*
+*.iml
+
+web/*
+tests/*
 build/*
 dist/*

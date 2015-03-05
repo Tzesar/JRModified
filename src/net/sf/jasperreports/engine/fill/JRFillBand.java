@@ -367,7 +367,8 @@ public class JRFillBand extends JRFillElementContainer implements JRBand, JROrig
 		boolean isOverflowAllowed
 		) throws JRException
 	{
-		filler.checkInterrupted();
+        System.out.println("-----BAND: Fill-----");
+        filler.checkInterrupted();
 		filler.fillContext.ensureMasterPageAvailable();
 
 		filler.setBandOverFlowAllowed(isOverflowAllowed);
@@ -451,7 +452,8 @@ public class JRFillBand extends JRFillElementContainer implements JRBand, JROrig
 
 	protected void evaluate(byte evaluation) throws JRException
 	{
-		resetSavedVariables();
+        System.out.println("-----BAND: Evaluate-----");
+        resetSavedVariables();
 		evaluateConditionalStyles(evaluation);
 		super.evaluate(evaluation);
 	}
