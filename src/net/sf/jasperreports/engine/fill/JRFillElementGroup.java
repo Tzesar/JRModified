@@ -32,9 +32,6 @@ import net.sf.jasperreports.engine.JRElement;
 import net.sf.jasperreports.engine.JRElementGroup;
 import net.sf.jasperreports.engine.JRVisitor;
 import net.sf.jasperreports.engine.util.ElementsVisitorUtils;
-import net.sf.jasperreports.engine.util.JRExpressionUtil;
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
 
 
 /**
@@ -147,7 +144,6 @@ public class JRFillElementGroup implements JRElementGroup, JRFillCloneable
 				List<JRElement> allElements = new ArrayList<JRElement>();
 				Object child = null;
 				JRElement[] childElementArray = null;
-                //Change this part
 				for(int i = 0; i < this.children.size(); i++)
 				{
 					child = this.children.get(i);

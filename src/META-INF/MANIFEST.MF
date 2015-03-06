@@ -91,4 +91,3 @@ Export-Package: net.sf.jasperreports.ant,
  net.sf.jasperreports.view.images,
  net.sf.jasperreports.view.save
 DynamicImport-Package: *
-Import-Package: org.jsoup

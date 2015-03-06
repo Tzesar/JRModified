@@ -916,8 +916,8 @@ public abstract class JRFillElement implements JRElement, JRFillCloneable, JRSty
 	}
 
 
-	/** Moves all the its dependant elements as much as the addition of its own movement
-	 *  and the height it must stretch.
+	/**
+	 *
 	 */
 	protected void moveDependantElements()
 	{
