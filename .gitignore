@@ -6,3 +6,4 @@ web/*
 tests/*
 build/*
 dist/*
+demo/*
